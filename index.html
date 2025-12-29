@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta property="og:title" content="香港宏達 - 電子落單">
+    <meta property="og:title" content="宏達批發 - 電子落單">
     <meta property="og:description" content="按此開始自助下單">
-    <title>香港宏達 - 電子落單</title>
+    <title>宏達批發 - 電子落單</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; padding-bottom: 120px; }
         
-        /* 頂部區域 - 可點擊修改 */
+        /* 頂部區域 */
         .sticky-header-container { position: sticky; top: 0; z-index: 1020; background-color: #212529; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .top-info { padding: 12px 15px 5px 15px; color: white; cursor: pointer; transition: background 0.2s; }
-        .top-info:active { background-color: #343a40; } /* 點擊反饋 */
+        .top-info:active { background-color: #343a40; }
         .client-name { font-size: 1.3rem; font-weight: 800; color: #ffc107; display: flex; align-items: center; gap: 5px; }
         .client-code { font-size: 0.85rem; color: #ccc; margin-top: 2px; }
-        .edit-hint { font-size: 0.7rem; color: #6c757d; border: 1px solid #6c757d; padding: 1px 5px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
-
-        /* 導航與搜尋 */
+        
+        /* 導航 */
         .nav-tabs { border-bottom: none; padding: 0 10px; }
         .nav-link { color: #aaa; font-weight: bold; border: none; border-radius: 10px 10px 0 0; padding: 10px 15px; font-size: 1rem; background: transparent; }
         .nav-link.active { background-color: #f8f9fa; color: #000; border-bottom: 4px solid #ffc107; }
+        
+        /* 搜尋 */
         .search-section { background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ddd; display: none; }
         .search-wrapper { position: relative; }
         .search-input { border-radius: 20px; border: 1px solid #ccc; padding: 8px 35px 8px 15px; width: 100%; }
@@ -43,17 +44,17 @@
         .qty-input.unit-kg { color: #d63384; font-size: 1rem; }
         .product-row.selected { background-color: #fff9db; border-left: 5px solid #ffc107; }
         
-        /* 底部與 Modal */
+        /* 底部 */
         .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1030; gap: 10px; }
         .total-box { font-size: 1.1rem; font-weight: bold; color: #333; }
         .total-num { color: #d32f2f; font-size: 1.4rem; padding: 0 3px; }
         .btn-view-cart { background-color: #6c757d; color: white; border: none; padding: 10px 18px; border-radius: 50px; font-weight: bold; font-size: 0.95rem; white-space: nowrap; transition: all 0.3s ease; }
         .btn-view-cart.active { background: linear-gradient(45deg, #ff9800, #ff5722); box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4); transform: scale(1.05); }
         .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        
+        /* Modal & Utilities */
         .tab-content { display: none; padding-top: 10px; }
         .tab-content.active { display: block; }
-        
-        /* Modal 通用 */
         .modal-header { background-color: #212529; color: white; }
         .modal-title { font-weight: bold; color: #ffc107; }
         .unit-btn-group { display: flex; gap: 15px; justify-content: center; padding: 20px; }
@@ -76,7 +77,7 @@
             <div class="client-code">編號: <span id="displayClientCode">---</span></div>
         </div>
         <div style="text-align: right; font-size: 0.8rem; color: #ccc;">
-            香港宏達<br>Tel: 63771688
+            宏達批發<br>Tel: 63771688
         </div>
     </div>
     
@@ -88,6 +89,7 @@
             <button class="nav-link" style="width:100%" onclick="switchTab('all')">📋 全部產品</button>
         </li>
     </ul>
+    
     <div class="search-section" id="searchBar">
         <div class="search-wrapper">
             <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋產品 / 編號..." oninput="filterAllProducts()">
@@ -126,7 +128,14 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">客戶編號 (由宏達提供)</label>
                     <input type="text" id="inputShopCode" class="form-control" placeholder="例如：A8888 (未有可留空)">
-                    <div class="form-text">如屬新客戶或急單，此欄可留空，我們會稍後為您補上。</div>
+                    <div class="form-text">如屬新客戶或急單，此欄可留空。</div>
+                </div>
+                <hr class="my-4">
+                <div class="d-grid">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="resetFrequentList()">
+                        <i class="bi bi-arrow-counterclockwise"></i> 清空我的「常用清單」紀錄
+                    </button>
+                    <div class="form-text text-center mt-1">如果常用清單太亂，可按此重置。</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -170,11 +179,11 @@
 
 <script>
     // ==========================================
-    // V8.1 核心數據
+    // V8.2 核心: 智能排序 + 數據管理
     // ==========================================
     let shopName = "";
     let shopCode = "";
-    const storageKey = "hunda_universal_v8"; // 通用數據庫鑰匙
+    const storageKey = "hunda_universal_v8"; 
 
     // 產品列表
     const eelProducts = ["D22J", "D22L", "D22", "D22C", "D22A", "D22D", "D22I", "D22G"];
@@ -212,7 +221,7 @@
     let productMap = {}, cart = {}, cartUnits = {}, cartModal = null, unitModal = null, pendingProductCode = null, nameModal = null;
 
     function init() {
-        // V8.1 自助登記邏輯
+        // V8.2 自助登記
         const savedName = localStorage.getItem(storageKey + '_shopName');
         const savedCode = localStorage.getItem(storageKey + '_shopCode');
         
@@ -230,10 +239,22 @@
         
         loadCart(); 
         
-        // Load frequent list
-        const savedFrequent = localStorage.getItem(storageKey + '_freq');
+        // V8.2 Load frequent list (Array of objects: {code, count})
+        // 為了相容 V8.1 的舊數據 (只是 Array of strings)，我們做一個轉換檢查
+        const savedFrequent = localStorage.getItem(storageKey + '_freqData');
         if (savedFrequent) {
-            try { frequentCodes = JSON.parse(savedFrequent); } catch(e) {}
+            try { frequentData = JSON.parse(savedFrequent); } catch(e) {}
+        } else {
+            // 嘗試讀取舊版 V8.1 數據並遷移
+            const oldFrequent = localStorage.getItem(storageKey + '_freq');
+            if (oldFrequent) {
+                try { 
+                    const oldArr = JSON.parse(oldFrequent); 
+                    // 給舊數據一個默認 count: 1，並保持原有順序（index 越大越新，所以 count 給高一點點？）
+                    // 簡單起見，全部 count: 1
+                    frequentData = oldArr.map(code => ({code: code, count: 1}));
+                } catch(e) {}
+            }
         }
 
         renderFrequent(); 
@@ -271,11 +292,8 @@
     function openProfileModal() {
         document.getElementById('inputShopName').value = shopName;
         document.getElementById('inputShopCode').value = (shopCode === "---" || shopCode === "新開戶") ? "" : shopCode;
-        
-        // 顯示取消按鈕 (因為已經有資料了，可以不改)
         document.getElementById('btnCancelProfile').style.display = 'block';
         document.getElementById('nameError').style.display = 'none';
-
         if (!nameModal) nameModal = new bootstrap.Modal(document.getElementById('profileModal'));
         nameModal.show();
     }
@@ -285,8 +303,23 @@
         document.getElementById('displayClientCode').innerText = shopCode;
     }
 
-    // 初始化為空，等待學習
-    let frequentCodes = []; 
+    // V8.2 Data Structure: Array of {code: "A01", count: 5}
+    let frequentData = []; 
+
+    // V8.2 Reset Function
+    function resetFrequentList() {
+        if(confirm("確定要清空「常用清單」的所有紀錄嗎？\n(此操作無法復原)")){
+            frequentData = [];
+            localStorage.removeItem(storageKey + '_freqData'); // Clear new data
+            localStorage.removeItem(storageKey + '_freq');     // Clear old data just in case
+            renderFrequent();
+            alert("常用清單已重置。");
+            // Close modal
+            const modalEl = document.getElementById('profileModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+        }
+    }
 
     function loadCart() {
         const c=localStorage.getItem(storageKey + '_cart'), u=localStorage.getItem(storageKey + '_units');
@@ -299,14 +332,22 @@
     }
     function switchTab(t){document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');event.target.classList.add('active');if(t==='all'){clearSearch();document.getElementById('searchBar').style.display='block';window.scrollTo(0,0)}else{document.getElementById('searchBar').style.display='none'}}
     
+    // V8.2 Sorted Rendering
     function renderFrequent(){
         const c=document.getElementById('tab-frequent');
-        if(!frequentCodes || frequentCodes.length===0){
+        if(!frequentData || frequentData.length===0){
             c.innerHTML='<div class="text-center p-5 text-muted"><i class="bi bi-stars" style="font-size: 2rem; color: #ffc107;"></i><p class="mt-3">您的常用清單目前是空的。</p><p style="font-size: 0.9rem;">當您從「全部產品」發送訂單後，<br>系統會自動將產品加入此處。</p></div>';
             return;
         }
+        
+        // Sort by count (descending)
+        frequentData.sort((a, b) => b.count - a.count);
+
         let h='';
-        frequentCodes.forEach(code=>{const p=productMap[code];h+=p?createProductRow(p.fullName):createProductRow(code+' (未知)')});
+        frequentData.forEach(item=>{
+            const p=productMap[item.code];
+            h+=p?createProductRow(p.fullName):createProductRow(item.code+' (未知)');
+        });
         c.innerHTML=h;
     }
 
@@ -370,13 +411,22 @@
     function sendWhatsApp(){
         if(Object.keys(cart).length===0){alert("請先選擇產品！");return}
         
-        let newFrequent = [...frequentCodes];
+        // V8.2 Learning Logic: Update Counts
+        let updated = false;
         for(let code in cart){
-            if(!newFrequent.includes(code)) newFrequent.push(code);
+            let found = frequentData.find(item => item.code === code);
+            if(found){
+                found.count++; // Increment count
+            } else {
+                frequentData.push({code: code, count: 1}); // Add new with count 1
+            }
+            updated = true;
         }
-        frequentCodes = newFrequent;
-        localStorage.setItem(storageKey + '_freq', JSON.stringify(frequentCodes));
-        renderFrequent();
+        
+        if(updated) {
+            localStorage.setItem(storageKey + '_freqData', JSON.stringify(frequentData));
+            renderFrequent();
+        }
 
         // 處理顯示用的 Code
         let codeDisplay = (shopCode === "---" || !shopCode) ? "(新開戶)" : shopCode;
@@ -394,6 +444,4 @@
 </script>
 
 </body>
-
 </html>
-
